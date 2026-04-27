@@ -28,12 +28,20 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }, observerOptions);
 
-  // We will add the class 'animate-on-scroll' to elements we want to animate globally
   document.querySelectorAll('.animate-on-scroll').forEach(el => {
     observer.observe(el);
   });
 
-  // Global Cart Logic to update badge everywhere
+  // Inject Global Toast HTML if not present
+  if (!document.getElementById('toast')) {
+    const toastDiv = document.createElement('div');
+    toastDiv.className = 'toast';
+    toastDiv.id = 'toast';
+    toastDiv.innerHTML = '<i class="fa-solid fa-check-circle"></i> Item added to cart!';
+    document.body.appendChild(toastDiv);
+  }
+
+  // Global Cart Logic
   function updateCartBadge() {
     const cart = JSON.parse(localStorage.getItem('everglowCart')) || [];
     const badge = document.getElementById('cartBadge');
@@ -45,7 +53,91 @@ document.addEventListener('DOMContentLoaded', () => {
   
   // Initial call on every page load
   updateCartBadge();
-
-  // Export globally so other inline scripts (like Add to Cart) can trigger it
   window.updateCartBadge = updateCartBadge;
+
+  // Global Add to Cart function
+  window.addToCart = function(productId, btnElement) {
+    // If btnElement is provided, look up the closest .card, otherwise try by data-id
+    const productCard = btnElement ? btnElement.closest('.card') : document.querySelector(`.card[data-id="${productId}"]`);
+    if (!productCard) return;
+
+    const name = productCard.getAttribute('data-name');
+    const price = parseFloat(productCard.getAttribute('data-price'));
+    const img = productCard.getAttribute('data-img');
+
+    let cart = JSON.parse(localStorage.getItem('everglowCart')) || [];
+    
+    // Check if item exists
+    const existingItem = cart.find(item => item.id === productId);
+    if (existingItem) {
+      existingItem.quantity += 1;
+    } else {
+      cart.push({ id: productId, name, price, img, quantity: 1 });
+    }
+
+    localStorage.setItem('everglowCart', JSON.stringify(cart));
+    updateCartBadge();
+    showToast();
+  };
+
+  // Show Toast
+  window.showToast = function(message = 'Item added to cart!') {
+    const toast = document.getElementById('toast');
+    if (toast) {
+      toast.innerHTML = `<i class="fa-solid fa-check-circle"></i> ${message}`;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3000);
+    }
+  };
+
+  // Global Checkout Function
+  window.checkout = function() {
+    let cart = JSON.parse(localStorage.getItem('everglowCart')) || [];
+    if (cart.length === 0) {
+      alert("Your cart is empty!");
+      return;
+    }
+    // Simulate checkout
+    localStorage.removeItem('everglowCart');
+    updateCartBadge();
+    alert("Thank you for your purchase! Your order has been placed successfully.");
+    window.location.href = "shop.html"; // Redirect to shop
+  };
+
+  // Shop Page Category Filters
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const productCards = document.querySelectorAll('.product-grid .card');
+
+  if (filterBtns.length > 0 && productCards.length > 0) {
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Remove active class from all
+        filterBtns.forEach(b => b.classList.remove('active'));
+        // Add to clicked
+        btn.classList.add('active');
+
+        const category = btn.textContent.trim().toLowerCase();
+
+        productCards.forEach(card => {
+          const cardCategory = card.getAttribute('data-category');
+          if (!cardCategory) return; // skip if no category defined
+
+          if (category === 'all') {
+            card.style.display = 'block';
+            setTimeout(() => card.style.opacity = '1', 50);
+          } else {
+            if (cardCategory.toLowerCase() === category) {
+              card.style.display = 'block';
+              setTimeout(() => card.style.opacity = '1', 50);
+            } else {
+              card.style.opacity = '0';
+              setTimeout(() => card.style.display = 'none', 400); // match transition duration
+            }
+          }
+        });
+      });
+    });
+  }
 });

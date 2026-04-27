@@ -50,31 +50,34 @@
     <h2>Our Collection</h2>
   </div>
   <div class="product-grid">
-    <div class="card">
+    <div class="card" data-id="1" data-name="Luminous Gold Necklace" data-price="999" data-img="assets/gold_necklace_1777128713777.png">
       <div class="card-img-wrapper">
         <img src="assets/gold_necklace_1777128713777.png" alt="Gold Necklace">
       </div>
       <div class="card-content">
         <h3>Luminous Gold Necklace</h3>
         <p>₹999</p>
+        <button class="add-to-cart" onclick="addToCart(1, this)">Add to Cart</button>
       </div>
     </div>
-    <div class="card">
+    <div class="card" data-id="2" data-name="Aura Drop Earrings" data-price="499" data-img="assets/elegant_earrings_1777128729154.png">
       <div class="card-img-wrapper">
         <img src="assets/elegant_earrings_1777128729154.png" alt="Elegant Earrings">
       </div>
       <div class="card-content">
         <h3>Aura Drop Earrings</h3>
         <p>₹499</p>
+        <button class="add-to-cart" onclick="addToCart(2, this)">Add to Cart</button>
       </div>
     </div>
-    <div class="card">
+    <div class="card" data-id="3" data-name="Eternity Cuff Bracelet" data-price="699" data-img="assets/gold_bracelet_1777128745122.png">
       <div class="card-img-wrapper">
         <img src="assets/gold_bracelet_1777128745122.png" alt="Bracelet">
       </div>
       <div class="card-content">
         <h3>Eternity Cuff Bracelet</h3>
         <p>₹699</p>
+        <button class="add-to-cart" onclick="addToCart(3, this)">Add to Cart</button>
       </div>
     </div>
   </div>
@@ -176,7 +179,7 @@
     <h2>Contact Us</h2>
   </div>
   <div class="contact-wrapper">
-    <form>
+    <form onsubmit="event.preventDefault(); alert('Message sent successfully!');">
       <div class="input-group">
         <input type="text" placeholder="Your Full Name" required>
       </div>

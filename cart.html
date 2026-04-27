@@ -268,7 +268,7 @@
               <h3>${item.name}</h3>
             </div>
           </td>
-          <td data-label="Price">₹${item.price}</td>
+          <td data-label="Price">₹${item.price.toLocaleString('en-IN')}</td>
           <td data-label="Quantity">
             <div class="qty-controls">
               <button class="qty-btn" onclick="changeQuantity(${item.id}, -1)"><i class="fa-solid fa-minus"></i></button>
@@ -276,7 +276,7 @@
               <button class="qty-btn" onclick="changeQuantity(${item.id}, 1)"><i class="fa-solid fa-plus"></i></button>
             </div>
           </td>
-          <td data-label="Total">₹${itemTotal}</td>
+          <td data-label="Total">₹${itemTotal.toLocaleString('en-IN')}</td>
           <td data-label="Remove">
             <button class="remove-btn" onclick="removeItem(${item.id})"><i class="fa-solid fa-trash"></i></button>
           </td>
@@ -306,17 +306,17 @@
       <div class="cart-summary">
         <div class="summary-row">
           <span>Subtotal</span>
-          <span>₹${subtotal.toFixed(2)}</span>
+          <span>₹${subtotal.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
         </div>
         <div class="summary-row">
           <span>Estimated Tax (18%)</span>
-          <span>₹${tax.toFixed(2)}</span>
+          <span>₹${tax.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
         </div>
         <div class="summary-total">
           <span>Total</span>
-          <span>₹${grandTotal.toFixed(2)}</span>
+          <span>₹${grandTotal.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
         </div>
-        <button class="btn checkout-btn" onclick="alert('Checkout process initiated!')">Proceed to Checkout</button>
+        <button class="btn checkout-btn" onclick="window.checkout()">Proceed to Checkout</button>
       </div>
     `;
   }
