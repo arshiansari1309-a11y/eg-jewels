@@ -43,7 +43,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Global Cart Logic
   function updateCartBadge() {
-    const cart = JSON.parse(localStorage.getItem('everglowCart')) || [];
+    let cart = [];
+    try {
+      cart = JSON.parse(localStorage.getItem('everglowCart')) || [];
+      if (!Array.isArray(cart)) cart = [];
+    } catch (e) {
+      cart = [];
+    }
     const badge = document.getElementById('cartBadge');
     if (badge) {
       const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
@@ -65,10 +71,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const price = parseFloat(productCard.getAttribute('data-price'));
     const img = productCard.getAttribute('data-img');
 
-    let cart = JSON.parse(localStorage.getItem('everglowCart')) || [];
+    let cart = [];
+    try {
+      cart = JSON.parse(localStorage.getItem('everglowCart')) || [];
+      if (!Array.isArray(cart)) cart = [];
+    } catch (e) {
+      cart = [];
+    }
     
     // Check if item exists
-    const existingItem = cart.find(item => item.id === productId);
+    const existingItem = cart.find(item => item.id == productId);
     if (existingItem) {
       existingItem.quantity += 1;
     } else {
