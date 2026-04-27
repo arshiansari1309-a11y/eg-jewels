@@ -218,6 +218,55 @@
   </div>
 </div>
 
+<!-- Payment Modal -->
+<div id="paymentModal" class="payment-modal">
+  <div class="payment-modal-content">
+    <div class="modal-header">
+      <h3>Select Payment Method</h3>
+      <button class="close-btn" onclick="closePaymentModal()"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    
+    <div class="payment-options">
+      <!-- UPI Option -->
+      <div class="payment-option active" id="upiOption">
+        <div class="option-header">
+          <i class="fa-brands fa-google-pay" style="font-size: 24px;"></i>
+          <h4>UPI Payment</h4>
+        </div>
+        <div class="option-body">
+          <p>Scan or pay directly to the UPI ID below:</p>
+          <div class="upi-box">
+            <span class="upi-id" id="upiIdText">arshiansari1309-1@okicici</span>
+            <button class="copy-btn" onclick="copyUpiId()" title="Copy UPI ID"><i class="fa-regular fa-copy"></i></button>
+          </div>
+          <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=upi://pay?pa=arshiansari1309-1@okicici&pn=Everglow%20Jewels" alt="UPI QR Code" class="qr-code">
+        </div>
+      </div>
+      
+      <!-- Other Options (Disabled/Dummy) -->
+      <div class="payment-option disabled">
+        <div class="option-header">
+          <i class="fa-regular fa-credit-card"></i>
+          <h4>Credit / Debit Card</h4>
+          <span class="badge">Coming Soon</span>
+        </div>
+      </div>
+      
+      <div class="payment-option disabled">
+        <div class="option-header">
+          <i class="fa-solid fa-money-bill-wave"></i>
+          <h4>Cash on Delivery</h4>
+          <span class="badge">Coming Soon</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button class="btn confirm-btn" onclick="confirmPayment()">Confirm Payment</button>
+    </div>
+  </div>
+</div>
+
 <footer>
   <div class="footer-content">
     <div class="footer-col">

@@ -111,10 +111,40 @@ document.addEventListener('DOMContentLoaded', () => {
       alert("Your cart is empty!");
       return;
     }
-    // Simulate checkout
+    // Show payment modal instead of completing immediately
+    const modal = document.getElementById('paymentModal');
+    if (modal) {
+      modal.classList.add('active');
+    } else {
+      alert("Payment gateway is currently unavailable.");
+    }
+  };
+
+  window.closePaymentModal = function() {
+    const modal = document.getElementById('paymentModal');
+    if (modal) {
+      modal.classList.remove('active');
+    }
+  };
+
+  window.copyUpiId = function() {
+    const upiText = document.getElementById('upiIdText');
+    if(upiText) {
+      navigator.clipboard.writeText(upiText.textContent).then(() => {
+        showToast("UPI ID copied to clipboard!");
+      }).catch(err => {
+        console.error('Failed to copy: ', err);
+        alert("Failed to copy UPI ID");
+      });
+    }
+  };
+
+  window.confirmPayment = function() {
+    // Complete the checkout process
     localStorage.removeItem('everglowCart');
     updateCartBadge();
-    alert("Thank you for your purchase! Your order has been placed successfully.");
+    closePaymentModal();
+    alert("Thank you for your payment! Your order has been placed successfully.");
     window.location.href = "shop.html"; // Redirect to shop
   };
 
