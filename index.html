@@ -4,6 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Everglow Jewels - Premium Anti-Tarnish Jewellery</title>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-20CN2TSG99"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-20CN2TSG99');
+</script>
   <meta name="description" content="Elegant, durable, and handmade anti-tarnish jewellery crafted with love.">
   
   <!-- Google Fonts -->
@@ -25,7 +34,9 @@
     <a href="index.html">Home</a>
     <a href="shop.html">Shop</a>
     <a href="about.html">Our Story</a>
+    <a href="testimonial.html">Testimonials</a>
     <a href="contact.html">Contact</a>
+    <a href="wishlist.html" title="Wishlist"><i class="fa-regular fa-heart"></i></a>
     <a href="cart.html" class="cart-link">
       <i class="fa-solid fa-bag-shopping"></i>
       <span class="cart-badge" id="cartBadge">0</span>
@@ -35,51 +46,69 @@
 
 <section class="hero">
   <div class="hero-text">
-    <h2>Handmade <br><span>Anti-Tarnish</span> Jewellery</h2>
-    <p>Discover our exclusive collection of elegant, durable pieces crafted with love and precision to make you shine forever.</p>
-    <a href="shop.html" class="btn">Explore Collection</a>
+    <h2>Crafted to Shine <br><span>With Your Story</span></h2>
+    <p>Discover elegant, durable anti-tarnish pieces that feel luxurious yet affordable. Perfect for every woman's unique journey.</p>
+    <div style="display: flex; gap: 15px; margin-top: 20px;">
+      <a href="shop.html" class="btn">Shop Collection</a>
+      <a href="shop.html" class="btn" style="background: transparent; border: 2px solid var(--primary-color); color: var(--text-light);">New Arrivals</a>
+    </div>
   </div>
   <div class="hero-img">
     <img src="assets/hero_jewelry_1777128696225.png" alt="Premium Anti-Tarnish Jewellery">
   </div>
 </section>
 
+<div class="trust-bar animate-on-scroll">
+  <div class="trust-item"><i class="fa-solid fa-truck-fast"></i> Free Shipping</div>
+  <div class="trust-item"><i class="fa-solid fa-money-bill-wave"></i> COD Available</div>
+  <div class="trust-item"><i class="fa-solid fa-rotate-left"></i> Easy Returns</div>
+  <div class="trust-item"><i class="fa-solid fa-shield-halved"></i> Secure Payments</div>
+</div>
+
 <section class="products animate-on-scroll" id="products">
   <div class="section-header">
-    <p>Featured Items</p>
-    <h2>Our Collection</h2>
+    <p>Trending This Week</p>
+    <h2>Bestsellers</h2>
   </div>
   <div class="product-grid">
-    <div class="card" data-id="1" data-name="Luminous Earrings" data-price="129" data-img="assets/IMG-20260119-WA0056.jpg">
+    <div class="card" data-id="1" data-name="Luminous Earrings" data-price="129" data-img="assets/IMG-20260119-WA0056.jpg" onclick="openProductModal(1)" style="cursor:pointer;">
+      <div class="urgency-tag">Trending</div>
+      <button class="wishlist-btn" data-id="1" onclick="toggleWishlist(1, this, event)"><i class="fa-regular fa-heart"></i></button>
       <div class="card-img-wrapper">
         <img src="assets/IMG-20260119-WA0056.jpg" alt="Luminous Earring">
       </div>
       <div class="card-content">
         <h3>Luminous Earrings</h3>
         <p>₹129</p>
-        <button class="add-to-cart" onclick="addToCart(1, this)">Add to Cart</button>
+        <button class="add-to-cart" onclick="event.stopPropagation(); addToCart(1, this)">Add to Cart</button>
       </div>
     </div>
-    <div class="card" data-id="2" data-name="Aura Drop Earrings" data-price="129"data-img="assets/1767723199583 (1).jpg">
+    <div class="card" data-id="2" data-name="Aura Drop Earrings" data-price="129" data-img="assets/1767723199583 (1).jpg" onclick="openProductModal(2)" style="cursor:pointer;">
+      <button class="wishlist-btn" data-id="2" onclick="toggleWishlist(2, this, event)"><i class="fa-regular fa-heart"></i></button>
       <div class="card-img-wrapper">
         <img src="assets/1767723199583 (1).jpg" alt="Elegant Earrings">
       </div>
       <div class="card-content">
         <h3>Aura Drop Earrings</h3>
         <p>₹129</p>
-        <button class="add-to-cart" onclick="addToCart(2, this)">Add to Cart</button>
+        <button class="add-to-cart" onclick="event.stopPropagation(); addToCart(2, this)">Add to Cart</button>
       </div>
     </div>
-    <div class="card" data-id="3" data-name=" Cuff Bracelet" data-price="249"data-img="assets/Elegant wrist with floral cuff bracelet.webp">
+    <div class="card" data-id="3" data-name="Cuff Bracelet" data-price="249" data-img="assets/Elegant wrist with floral cuff bracelet.webp" onclick="openProductModal(3)" style="cursor:pointer;">
+      <div class="urgency-tag" style="background:#000; color:#fff;">Only 3 Left</div>
+      <button class="wishlist-btn" data-id="3" onclick="toggleWishlist(3, this, event)"><i class="fa-regular fa-heart"></i></button>
       <div class="card-img-wrapper">
         <img src="assets/Elegant wrist with floral cuff bracelet.webp" alt="Bracelet">
       </div>
       <div class="card-content">
-        <h3> Cuff Bracelet</h3>
+        <h3>Cuff Bracelet</h3>
         <p>₹249</p>
-        <button class="add-to-cart" onclick="addToCart(3, this)">Add to Cart</button>
+        <button class="add-to-cart" onclick="event.stopPropagation(); addToCart(3, this)">Add to Cart</button>
       </div>
     </div>
+  </div>
+  <div style="text-align: center; margin-top: 50px;">
+    <a href="shop.html" class="btn">View All Collections</a>
   </div>
 </section>
 
@@ -88,10 +117,11 @@
     <img src="assets/about_jewelry_1777128764345.png" alt="Crafting Jewellery">
   </div>
   <div class="about-text">
-    <h2>The Artisan's Touch</h2>
+    <h2>Our Story</h2>
+    <p style="font-style: italic; font-size: 20px; color: var(--primary-color); margin-bottom: 20px;">"EG Jewels was created to bring elegant jewellery designs that feel luxurious yet affordable for every woman."</p>
     <p>At Everglow Jewels, we believe that true elegance lies in the details. Every piece in our collection is meticulously handcrafted by skilled artisans who pour their passion into creating timeless beauty.</p>
-    <p>We specialize in anti-tarnish materials designed to withstand the test of time, ensuring that your jewelry remains as brilliant as the day you first wore it. Our commitment to premium quality and affordable luxury sets us apart.</p>
-    <a href="contact.html" class="btn">Get In Touch</a>
+    <p>We specialize in anti-tarnish materials designed to withstand the test of time, ensuring that your jewelry remains as brilliant as the day you first wore it.</p>
+    <a href="about.html" class="btn" style="margin-top: 15px;">Read Founder's Message</a>
   </div>
 </section>
 
@@ -119,38 +149,7 @@
   </div>
 </section>
 
-<section class="testimonials animate-on-scroll" id="testimonials">
-  <div class="section-header">
-    <p>Real Voices</p>
-    <h2>What Our Clients Say</h2>
-  </div>
-  <div class="testimonial-grid">
-    <div class="testimonial-card">
-      <img src="assets/avatar_1_1777130018194.png" alt="Client 1" class="testimonial-img">
-      <div class="stars">
-        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-      </div>
-      <p>"Absolutely stunning! The anti-tarnish coating is a game changer. I've been wearing my necklace every day and it still looks brand new."</p>
-      <h4>Sarah Jenkins</h4>
-    </div>
-    <div class="testimonial-card">
-      <img src="assets/avatar_2_1777130059986.png" alt="Client 2" class="testimonial-img">
-      <div class="stars">
-        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star-half-stroke"></i>
-      </div>
-      <p>"I bought the eternity cuff for my wife and she couldn't be happier. The premium packaging and the quality of the jewelry is top tier."</p>
-      <h4>Michael R.</h4>
-    </div>
-    <div class="testimonial-card">
-      <img src="assets/avatar_3_1777130085131.png" alt="Client 3" class="testimonial-img">
-      <div class="stars">
-        <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
-      </div>
-      <p>"Everglow Jewels never disappoints. Fast shipping, beautiful designs, and most importantly, it doesn't irritate my sensitive skin."</p>
-      <h4>Elena Gomez</h4>
-    </div>
-  </div>
-</section>
+
 
 <section class="instagram animate-on-scroll">
   <div class="section-header">
@@ -212,6 +211,18 @@
 </footer>
 
 <script src="script.js"></script>
+<script>
+function submitForm() {
+  fetch("YOUR_SCRIPT_URL", {
+    method: "POST",
+    body: JSON.stringify({
+      name: document.getElementById("name").value,
+      email: document.getElementById("email").value,
+      product: document.getElementById("product").value
+    })
+  });
+}
+</script>
 
 </body>
 </html>

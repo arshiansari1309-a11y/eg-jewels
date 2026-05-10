@@ -4,6 +4,15 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Shop - Everglow Jewels</title>
+  <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-20CN2TSG99"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-20CN2TSG99');
+</script>
   
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -23,7 +32,9 @@
     <a href="index.html">Home</a>
     <a href="shop.html">Shop</a>
     <a href="about.html">Our Story</a>
+    <a href="testimonial.html">Testimonials</a>
     <a href="contact.html">Contact</a>
+    <a href="wishlist.html" title="Wishlist"><i class="fa-regular fa-heart"></i></a>
     <a href="cart.html" class="cart-link">
       <i class="fa-solid fa-bag-shopping"></i>
       <span class="cart-badge" id="cartBadge">0</span>
@@ -47,92 +58,100 @@
   
   <div class="product-grid" id="productGrid">
     <!-- Product items -->
-    <div class="card animate-on-scroll" data-category="Necklaces" data-id="1" data-name="Luminous Gold Pendant" data-price="149" data-img="assets/1767772546808.jpg">
+    <div class="card animate-on-scroll" data-category="Necklaces" data-id="1" data-name="Luminous Gold Pendant" data-price="149" data-img="assets/1767772546808.jpg" onclick="openProductModal(1)" style="cursor:pointer;">
+      <button class="wishlist-btn" data-id="1" onclick="toggleWishlist(1, this, event)"><i class="fa-regular fa-heart"></i></button>
       <div class="card-img-wrapper">
         <img src="assets/1767772546808.jpg" alt="Gold Pendant">
       </div>
       <div class="card-content">
         <h3>Luminous Gold Pendant</h3>
         <p>₹149</p>
-        <button class="add-to-cart" onclick="addToCart(1, this)">Add to Cart</button>
+        <button class="add-to-cart" onclick="event.stopPropagation(); addToCart(1, this)">Add to Cart</button>
       </div>
     </div>
     
-    <div class="card animate-on-scroll" data-category="Earrings" data-id="2" data-name="Aura Drop Earrings" data-price="199" data-img="assets/3772bbe7-ebcf-4aae-a370-5624bb766ded.webp">
+    <div class="card animate-on-scroll" data-category="Earrings" data-id="2" data-name="Aura Drop Earrings" data-price="199" data-img="assets/3772bbe7-ebcf-4aae-a370-5624bb766ded.webp" onclick="openProductModal(2)" style="cursor:pointer;">
+      <button class="wishlist-btn" data-id="2" onclick="toggleWishlist(2, this, event)"><i class="fa-regular fa-heart"></i></button>
       <div class="card-img-wrapper">
         <img src="assets/3772bbe7-ebcf-4aae-a370-5624bb766ded.webp" alt="Beaded Earrings">
       </div>
       <div class="card-content">
         <h3>Aura Drop Earrings</h3>
         <p>₹199</p>
-        <button class="add-to-cart" onclick="addToCart(2, this)">Add to Cart</button>
+        <button class="add-to-cart" onclick="event.stopPropagation(); addToCart(2, this)">Add to Cart</button>
       </div>
     </div>
     
-    <div class="card animate-on-scroll" data-category="Bracelets" data-id="3" data-name="Eternity Cuff Bracelet" data-price="249" data-img="assets/image Feb 15, 2026, 10_35_04 PM.png">
+    <div class="card animate-on-scroll" data-category="Bracelets" data-id="3" data-name="Eternity Cuff Bracelet" data-price="249" data-img="assets/image Feb 15, 2026, 10_35_04 PM.png" onclick="openProductModal(3)" style="cursor:pointer;">
+      <button class="wishlist-btn" data-id="3" onclick="toggleWishlist(3, this, event)"><i class="fa-regular fa-heart"></i></button>
       <div class="card-img-wrapper">
         <img src="assets/image Feb 15, 2026, 10_35_04 PM.png" alt="Bracelet">
       </div>
       <div class="card-content">
         <h3>Eternity Cuff Bracelet</h3>
         <p>₹249</p>
-        <button class="add-to-cart" onclick="addToCart(3, this)">Add to Cart</button>
+        <button class="add-to-cart" onclick="event.stopPropagation(); addToCart(3, this)">Add to Cart</button>
       </div>
     </div>
 
     <!-- Generating more mock items for a fuller shop -->
-    <div class="card animate-on-scroll" data-category="Necklaces" data-id="4" data-name="Royal Pearl Necklace" data-price="129" data-img="assets/1767723151297.jpg">
+    <div class="card animate-on-scroll" data-category="Necklaces" data-id="4" data-name="Royal Pearl Necklace" data-price="129" data-img="assets/1767723151297.jpg" onclick="openProductModal(4)" style="cursor:pointer;">
+      <button class="wishlist-btn" data-id="4" onclick="toggleWishlist(4, this, event)"><i class="fa-regular fa-heart"></i></button>
       <div class="card-img-wrapper">
         <img src="assets/1767723151297.jpg" alt="Pearl Necklace">
       </div>
       <div class="card-content">
         <h3>Royal Pearl Necklace</h3>
         <p>₹129</p>
-        <button class="add-to-cart" onclick="addToCart(4, this)">Add to Cart</button>
+        <button class="add-to-cart" onclick="event.stopPropagation(); addToCart(4, this)">Add to Cart</button>
       </div>
     </div>
     
-    <div class="card animate-on-scroll" data-category="Rings" data-id="5" data-name="Minimalist Gold Ring" data-price="199" data-img="assets/e40491c1-7588-400c-88b9-e5a0573fa2f7.png">
+    <div class="card animate-on-scroll" data-category="Rings" data-id="5" data-name="Minimalist Gold Ring" data-price="199" data-img="assets/e40491c1-7588-400c-88b9-e5a0573fa2f7.png" onclick="openProductModal(5)" style="cursor:pointer;">
+      <button class="wishlist-btn" data-id="5" onclick="toggleWishlist(5, this, event)"><i class="fa-regular fa-heart"></i></button>
       <div class="card-img-wrapper">
         <img src="assets/e40491c1-7588-400c-88b9-e5a0573fa2f7.png" alt="Gold Ring">
       </div>
       <div class="card-content">
         <h3>Minimalist Gold Ring</h3>
         <p>₹199</p>
-        <button class="add-to-cart" onclick="addToCart(5, this)">Add to Cart</button>
+        <button class="add-to-cart" onclick="event.stopPropagation(); addToCart(5, this)">Add to Cart</button>
       </div>
     </div>
 
-    <div class="card animate-on-scroll" data-category="Necklaces" data-id="6" data-name=" Pearl Accent" data-price="99" data-img="assets/1767772247334.jpg">
+    <div class="card animate-on-scroll" data-category="Necklaces" data-id="6" data-name=" Pearl Accent" data-price="99" data-img="assets/1767772247334.jpg" onclick="openProductModal(6)" style="cursor:pointer;">
+      <button class="wishlist-btn" data-id="6" onclick="toggleWishlist(6, this, event)"><i class="fa-regular fa-heart"></i></button>
       <div class="card-img-wrapper">
         <img src="assets/1767772247334.jpg" alt=" Pearl Set">
       </div>
       <div class="card-content">
         <h3>Pearl Accent </h3>
         <p>₹99</p>
-        <button class="add-to-cart" onclick="addToCart(6, this)">Add to Cart</button>
+        <button class="add-to-cart" onclick="event.stopPropagation(); addToCart(6, this)">Add to Cart</button>
       </div>
     </div>
-    <div class="card animate-on-scroll" data-category="Bracelets" data-id="7" data-name="Stone Bracelet" data-price="249" data-img="assets/1000195066.png">
+    <div class="card animate-on-scroll" data-category="Bracelets" data-id="7" data-name="Stone Bracelet" data-price="249" data-img="assets/1000195066.png" onclick="openProductModal(7)" style="cursor:pointer;">
+      <button class="wishlist-btn" data-id="7" onclick="toggleWishlist(7, this, event)"><i class="fa-regular fa-heart"></i></button>
       <div class="card-img-wrapper">
         <img src="assets/1000195066.png" alt=" Stone Bracelet">
       </div>
       <div class="card-content">
         <h3>Stone Bracelet </h3>
         <p>₹249</p>
-        <button class="add-to-cart" onclick="addToCart(7, this)">Add to Cart</button>
-      </div>"
-  </div>
-<div class="card animate-on-scroll" data-category="Earrings" data-id="8" data-name="Floral Earrings" data-price="129" data-img="assets/dd725f7e-5ad8-479c-94c7-9ea0fe252d48.webp">
+        <button class="add-to-cart" onclick="event.stopPropagation(); addToCart(7, this)">Add to Cart</button>
+      </div>
+    </div>
+    <div class="card animate-on-scroll" data-category="Earrings" data-id="8" data-name="Floral Earrings" data-price="129" data-img="assets/dd725f7e-5ad8-479c-94c7-9ea0fe252d48.webp" onclick="openProductModal(8)" style="cursor:pointer;">
+      <button class="wishlist-btn" data-id="8" onclick="toggleWishlist(8, this, event)"><i class="fa-regular fa-heart"></i></button>
       <div class="card-img-wrapper">
         <img src="assets/dd725f7e-5ad8-479c-94c7-9ea0fe252d48.webp" alt="Floral Earring">
       </div>
       <div class="card-content">
-        <h3>Floral Earring</h3
-        <p>₹129></p>
-        <button class="add-to-cart" onclick="addToCart(7, this)">Add to Cart</button>
-      </div>"
-  </div>
+        <h3>Floral Earring</h3>
+        <p>₹129</p>
+        <button class="add-to-cart" onclick="event.stopPropagation(); addToCart(8, this)">Add to Cart</button>
+      </div>
+    </div>
 </section>
 
 <footer>

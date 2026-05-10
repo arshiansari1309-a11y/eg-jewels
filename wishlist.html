@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wishlist - Everglow Jewels</title>
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<header id="header">
+  <h1><a href="index.html" style="color: inherit; text-decoration: none;">Everglow Jewels</a></h1>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="shop.html">Shop</a>
+    <a href="about.html">Our Story</a>
+    <a href="testimonial.html">Testimonials</a>
+    <a href="contact.html">Contact</a>
+    <a href="wishlist.html" title="Wishlist"><i class="fa-solid fa-heart"></i></a>
+    <a href="cart.html" class="cart-link">
+      <i class="fa-solid fa-bag-shopping"></i>
+      <span class="cart-badge" id="cartBadge">0</span>
+    </a>
+  </nav>
+</header>
+
+<section class="page-header animate-on-scroll">
+  <h2>Your Wishlist</h2>
+  <p>Pieces you've fallen in love with. Saved for whenever you're ready to shine.</p>
+</section>
+
+<section class="products animate-on-scroll" style="min-height: 50vh;">
+  <div class="product-grid" id="wishlistGrid">
+    <!-- Wishlist items injected here by JS -->
+  </div>
+  <div id="emptyWishlistMsg" style="text-align: center; display: none;">
+    <i class="fa-regular fa-heart" style="font-size: 50px; color: #ccc; margin-bottom: 20px;"></i>
+    <h3>Your wishlist is currently empty.</h3>
+    <p style="margin-bottom: 30px; color: var(--text-muted);">Explore our elegant collection and save your favorites here.</p>
+    <a href="shop.html" class="btn">Explore Collection</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-content">
+    <div class="footer-col">
+      <h3>Everglow Jewels</h3>
+      <p>Elevating everyday style with elegant, handcrafted, anti-tarnish jewelry that tells your unique story.</p>
+      <div class="social-links">
+        <a href="https://www.instagram.com/ever_glowjewels" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+        <a href="https://www.facebook.com/everglow jewels"target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="https://www.pinterest.com/evrglow_jewels" target="_blank"><i class="fa-brands fa-pinterest-p"></i></a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Everglow Jewels | Crafted with passion. All Rights Reserved.</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  window.renderWishlist = function() {
+    const grid = document.getElementById('wishlistGrid');
+    const emptyMsg = document.getElementById('emptyWishlistMsg');
+    
+    let wishlist = JSON.parse(localStorage.getItem('egWishlist')) || [];
+    
+    if(wishlist.length === 0) {
+      grid.innerHTML = '';
+      emptyMsg.style.display = 'block';
+      return;
+    }
+    
+    emptyMsg.style.display = 'none';
+    grid.innerHTML = '';
+    
+    wishlist.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.setAttribute('data-id', item.id);
+      card.setAttribute('data-name', item.name);
+      card.setAttribute('data-price', item.price);
+      card.setAttribute('data-img', item.img);
+      card.setAttribute('onclick', 'openProductModal(' + item.id + ')');
+      card.style.cursor = 'pointer';
+      
+      card.innerHTML = `
+        <button class="wishlist-btn active" data-id="${item.id}" onclick="toggleWishlist(${item.id}, this, event)">
+          <i class="fa-solid fa-heart"></i>
+        </button>
+        <div class="card-img-wrapper">
+          <img src="${item.img}" alt="${item.name}">
+        </div>
+        <div class="card-content">
+          <h3>${item.name}</h3>
+          <p>₹${item.price}</p>
+          <button class="add-to-cart" onclick="event.stopPropagation(); addToCart(${item.id}, this)">Add to Cart</button>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  };
+  
+  document.addEventListener('DOMContentLoaded', renderWishlist);
+</script>
+
+</body>
+</html>

@@ -182,4 +182,113 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   }
+  // === GLOBAL INJECTIONS ===
+  
+  // Inject WhatsApp Floating Button
+  if (!document.getElementById('whatsapp-float')) {
+    const waLink = document.createElement('a');
+    waLink.id = 'whatsapp-float';
+    waLink.className = 'whatsapp-float';
+    waLink.href = 'https://wa.me/1234567890?text=Hi%20EG%20Jewels!%20I%20need%20styling%20help.';
+    waLink.target = '_blank';
+    waLink.innerHTML = '<i class="fa-brands fa-whatsapp"></i>';
+    document.body.appendChild(waLink);
+  }
+
+  // Inject Product Modal HTML if not present
+  if (!document.getElementById('productModalOverlay')) {
+    const modalHTML = `
+      <div class="product-modal-overlay" id="productModalOverlay" onclick="closeProductModal(event)">
+        <div class="product-modal" onclick="event.stopPropagation()">
+          <span class="pm-close" onclick="closeProductModal()">&times;</span>
+          <div class="pm-img">
+            <img src="" id="pmImg" alt="Product Image">
+          </div>
+          <div class="pm-details">
+            <h3 id="pmTitle">Product Title</h3>
+            <div class="pm-price" id="pmPrice">₹0</div>
+            <p class="pm-desc" id="pmDesc">Elegant piece crafted with precision. Perfect for any occasion.</p>
+            <ul class="pm-specs">
+              <li><strong>Material:</strong> Premium Anti-Tarnish Alloy</li>
+              <li><strong>Plating:</strong> 18K Gold</li>
+              <li><strong>Skin Safety:</strong> Hypoallergenic</li>
+              <li><strong>Styling Tips:</strong> Best paired with minimalist evening wear.</li>
+            </ul>
+            <div class="pm-actions">
+              <button class="btn" id="pmAddToCart" onclick="">Add to Cart</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+  }
+
+  // === WISHLIST LOGIC ===
+  window.toggleWishlist = function(productId, btnElement, event) {
+    if(event) event.stopPropagation(); // prevent opening modal
+    const productCard = btnElement.closest('.card');
+    if (!productCard) return;
+
+    const name = productCard.getAttribute('data-name');
+    const price = parseFloat(productCard.getAttribute('data-price'));
+    const img = productCard.getAttribute('data-img');
+
+    let wishlist = JSON.parse(localStorage.getItem('egWishlist')) || [];
+    const index = wishlist.findIndex(item => item.id == productId);
+
+    if (index > -1) {
+      wishlist.splice(index, 1);
+      btnElement.classList.remove('active');
+      btnElement.innerHTML = '<i class="fa-regular fa-heart"></i>';
+      showToast('Removed from Wishlist');
+    } else {
+      wishlist.push({ id: productId, name, price, img });
+      btnElement.classList.add('active');
+      btnElement.innerHTML = '<i class="fa-solid fa-heart"></i>';
+      showToast('Added to Wishlist ❤️');
+    }
+    localStorage.setItem('egWishlist', JSON.stringify(wishlist));
+    
+    // If on wishlist page, re-render
+    if (window.renderWishlist) window.renderWishlist();
+  };
+
+  // Init Wishlist Hearts
+  function initWishlistUI() {
+    let wishlist = JSON.parse(localStorage.getItem('egWishlist')) || [];
+    document.querySelectorAll('.wishlist-btn').forEach(btn => {
+      const id = btn.getAttribute('data-id');
+      if (wishlist.find(i => i.id == id)) {
+        btn.classList.add('active');
+        btn.innerHTML = '<i class="fa-solid fa-heart"></i>';
+      }
+    });
+  }
+  initWishlistUI();
+
+  // === MODAL LOGIC ===
+  window.openProductModal = function(productId) {
+    const card = document.querySelector(`.card[data-id="${productId}"]`);
+    if (!card) return;
+    
+    const name = card.getAttribute('data-name');
+    const price = card.getAttribute('data-price');
+    const img = card.getAttribute('data-img');
+    
+    document.getElementById('pmTitle').textContent = name;
+    document.getElementById('pmPrice').textContent = `₹${price}`;
+    document.getElementById('pmImg').src = img;
+    
+    const addToCartBtn = document.getElementById('pmAddToCart');
+    addToCartBtn.setAttribute('onclick', `addToCart(${productId}); showToast('Added to Cart'); closeProductModal();`);
+    
+    document.getElementById('productModalOverlay').classList.add('active');
+  };
+
+  window.closeProductModal = function(event) {
+    if(event && event.target.id !== 'productModalOverlay') return;
+    document.getElementById('productModalOverlay').classList.remove('active');
+  };
+
 });
