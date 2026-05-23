@@ -1,5 +1,98 @@
 // script.js
 document.addEventListener('DOMContentLoaded', () => {
+  // Mobile Navigation Setup
+  const mainNav = document.querySelector('header nav');
+  if (mainNav) {
+    // 1. Mark text navigation links with a class so we can hide them on mobile via CSS
+    const navLinks = mainNav.querySelectorAll('a');
+    navLinks.forEach(link => {
+      const isWishlist = link.getAttribute('title') === 'Wishlist' || link.querySelector('.fa-heart');
+      const isCart = link.classList.contains('cart-link') || link.querySelector('.fa-bag-shopping');
+      if (!isWishlist && !isCart) {
+        link.classList.add('nav-text-link');
+      }
+    });
+
+    // 2. Inject mobile hamburger menu button
+    const mobileBtn = document.createElement('a');
+    mobileBtn.href = '#';
+    mobileBtn.className = 'mobile-menu-btn';
+    mobileBtn.id = 'mobileMenuBtn';
+    mobileBtn.setAttribute('aria-label', 'Toggle Menu');
+    mobileBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+    mainNav.appendChild(mobileBtn);
+
+    // 3. Inject Mobile Drawer Overlay and Container into body
+    const drawerHTML = `
+      <div class="mobile-drawer-overlay" id="mobileDrawerOverlay"></div>
+      <div class="mobile-drawer" id="mobileDrawer">
+        <div class="drawer-header">
+          <div class="drawer-logo">EverGlow Jewels</div>
+          <button class="drawer-close-btn" id="drawerCloseBtn" aria-label="Close Menu">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+        <div class="drawer-content">
+          <div class="drawer-links">
+            <a href="index.html" class="drawer-link"><i class="fa-solid fa-house"></i> Home</a>
+            <a href="shop.html" class="drawer-link"><i class="fa-solid fa-gem"></i> Shop</a>
+            <a href="about.html" class="drawer-link"><i class="fa-solid fa-book-open"></i> Our Story</a>
+            <a href="testimonial.html" class="drawer-link"><i class="fa-solid fa-star"></i> Testimonials</a>
+            <a href="contact.html" class="drawer-link"><i class="fa-solid fa-envelope"></i> Contact</a>
+          </div>
+          <div class="drawer-divider"></div>
+          <div class="drawer-meta">
+            <p class="drawer-tagline">Timeless anti-tarnish jewellery, handcrafted with passion.</p>
+            <div class="drawer-socials">
+              <a href="https://www.instagram.com/ever_glowjewels" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+              <a href="https://www.facebook.com/everglowjewels" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+              <a href="https://www.pinterest.com/evrglow_jewels" target="_blank"><i class="fa-brands fa-pinterest-p"></i></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', drawerHTML);
+
+    // 4. Toggle Drawer Logic
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileDrawer = document.getElementById('mobileDrawer');
+    const mobileDrawerOverlay = document.getElementById('mobileDrawerOverlay');
+    const drawerCloseBtn = document.getElementById('drawerCloseBtn');
+
+    function toggleDrawer(e) {
+      if (e) e.preventDefault();
+      const isActive = mobileDrawer.classList.toggle('active');
+      mobileDrawerOverlay.classList.toggle('active');
+      
+      // Update hamburger icon
+      if (mobileMenuBtn) {
+        const icon = mobileMenuBtn.querySelector('i');
+        if (icon) {
+          if (isActive) {
+            icon.className = 'fa-solid fa-xmark';
+          } else {
+            icon.className = 'fa-solid fa-bars';
+          }
+        }
+      }
+    }
+
+    if (mobileMenuBtn) mobileMenuBtn.addEventListener('click', toggleDrawer);
+    if (drawerCloseBtn) drawerCloseBtn.addEventListener('click', toggleDrawer);
+    if (mobileDrawerOverlay) mobileDrawerOverlay.addEventListener('click', toggleDrawer);
+
+    // 5. Highlight Current Active Page Link in Drawer
+    const currentPath = window.location.pathname.split('/').pop() || 'index.html';
+    const drawerLinks = document.querySelectorAll('.drawer-link');
+    drawerLinks.forEach(link => {
+      const href = link.getAttribute('href');
+      if (href === currentPath || (currentPath === '' && href === 'index.html')) {
+        link.classList.add('active');
+      }
+    });
+  }
+
   // Change header background on scroll
   const header = document.getElementById('header');
   if (header) {
