@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client Dashboard - EverGlow Jewels</title>
+  <meta name="description" content="View your order history, manage shipping details, and access exclusive member rewards.">
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="style.css">
+  
+  <script>
+    // Security redirect check before page rendering begins to avoid flash of private content
+    (function() {
+      const user = localStorage.getItem('egCurrentUser');
+      if (!user) {
+        window.location.replace('login.html');
+      }
+    })();
+  </script>
+</head>
+<body>
+
+<header id="header">
+  <h1><a href="index.html" style="color: inherit; text-decoration: none;">EVERGLOW JEWELS</a></h1>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="shop.html">Shop</a>
+    <a href="about.html">Our Story</a>
+    <a href="testimonial.html">Testimonials</a>
+    <a href="contact.html">Contact</a>
+    <a href="dashboard.html" id="headerAuthLink" title="Account"><i class="fa-regular fa-user"></i></a>
+    <a href="wishlist.html" title="Wishlist"><i class="fa-regular fa-heart"></i></a>
+    <a href="cart.html" class="cart-link">
+      <i class="fa-solid fa-bag-shopping"></i>
+      <span class="cart-badge" id="cartBadge">0</span>
+    </a>
+  </nav>
+</header>
+
+<section class="dashboard-page">
+  <div class="dashboard-header animate-on-scroll">
+    <p>Welcome to EverGlow Club</p>
+    <h2 id="welcomeTitle">Hello, Client</h2>
+  </div>
+  
+  <div class="dashboard-grid">
+    <!-- Sidebar Navigation -->
+    <aside class="dashboard-sidebar animate-on-scroll">
+      <div class="user-profile-summary">
+        <div class="user-avatar-placeholder">
+          <i class="fa-solid fa-crown"></i>
+        </div>
+        <h3 id="sidebarUserName">Customer Name</h3>
+        <span id="sidebarUserTier">Member Level</span>
+      </div>
+      
+      <div class="sidebar-menu">
+        <button class="sidebar-link active" id="btn-overview" onclick="switchPanel('overview')">
+          <i class="fa-solid fa-table-columns"></i> Account Overview
+        </button>
+        <button class="sidebar-link" id="btn-orders" onclick="switchPanel('orders')">
+          <i class="fa-solid fa-receipt"></i> My Orders
+        </button>
+        <button class="sidebar-link" id="btn-settings" onclick="switchPanel('settings')">
+          <i class="fa-solid fa-sliders"></i> Edit Profile
+        </button>
+        <button class="sidebar-link logout-link" onclick="window.logoutUser()">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i> Sign Out
+        </button>
+      </div>
+    </aside>
+    
+    <!-- Main Content Panel -->
+    <main class="dashboard-content animate-on-scroll">
+      
+      <!-- Panel: Overview -->
+      <div class="dashboard-content-panel active" id="panel-overview">
+        <h3 class="panel-title">Account Overview</h3>
+        
+        <!-- Quick stats -->
+        <div class="stats-row">
+          <div class="stat-card">
+            <i class="fa-solid fa-box-open"></i>
+            <h4>Total Orders</h4>
+            <p id="statOrdersCount">0</p>
+          </div>
+          <div class="stat-card">
+            <i class="fa-solid fa-gem"></i>
+            <h4>Club Membership</h4>
+            <p id="statUserTier">Gold</p>
+          </div>
+          <div class="stat-card">
+            <i class="fa-solid fa-heart"></i>
+            <h4>Wishlist items</h4>
+            <p id="statWishlistCount">0</p>
+          </div>
+        </div>
+        
+        <!-- Account info -->
+        <div class="details-grid">
+          <div class="detail-item">
+            <span class="label">Full Name</span>
+            <span class="value" id="profileName">Jane Doe</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Email Address</span>
+            <span class="value" id="profileEmail">jane.doe@example.com</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Phone Number</span>
+            <span class="value" id="profilePhone">+91 98765 43210</span>
+          </div>
+          <div class="detail-item">
+            <span class="label">Member Since</span>
+            <span class="value" id="profileJoined">June 2026</span>
+          </div>
+          <div class="detail-item" style="grid-column: span 2;">
+            <span class="label">Primary Shipping Address</span>
+            <span class="value" id="profileAddress">No address registered.</span>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Panel: Orders -->
+      <div class="dashboard-content-panel" id="panel-orders">
+        <h3 class="panel-title">My Orders</h3>
+        <div class="orders-table-wrapper">
+          <table class="orders-table" id="ordersTable">
+            <thead>
+              <tr>
+                <th>Order ID</th>
+                <th>Date</th>
+                <th>Items purchased</th>
+                <th>Total Paid</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="ordersTableBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+          
+          <div class="empty-orders-state" id="emptyOrdersState" style="display: none;">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <h3>No orders found</h3>
+            <p>You haven't placed any orders yet. Visit our shop to find beautiful pieces!</p>
+            <a href="shop.html" class="btn">Explore Shop</a>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Panel: Settings -->
+      <div class="dashboard-content-panel" id="panel-settings">
+        <h3 class="panel-title">Profile Settings</h3>
+        <form class="profile-edit-form" onsubmit="handleProfileUpdate(event)">
+          <div class="form-group">
+            <label for="editName">Full Name</label>
+            <input type="text" id="editName" required>
+          </div>
+          <div class="form-group">
+            <label for="editPhone">Phone Number</label>
+            <input type="tel" id="editPhone" required>
+          </div>
+          <div class="form-group">
+            <label for="editAddress">Primary Shipping Address</label>
+            <textarea id="editAddress" rows="3" required></textarea>
+          </div>
+          <button type="submit" class="btn">Save Changes</button>
+        </form>
+      </div>
+      
+    </main>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-content">
+    <div class="footer-col">
+      <h3>EverGlow Jewels</h3>
+      <p>Modern timeless jewellery crafted with emotional elegance for women who value beauty, confidence, and individuality.</p>
+      <div class="social-links">
+        <a href="https://www.instagram.com/ever_glowjewels" target="_blank"><i class="fa-brands fa-instagram"></i></a>
+        <a href="https://www.facebook.com/everglowjewels" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="https://www.pinterest.com/evrglow_jewels" target="_blank"><i class="fa-brands fa-pinterest-p"></i></a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 EverGlow Jewels | Crafted with passion. All Rights Reserved.</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  let currentUser = null;
+
+  document.addEventListener('DOMContentLoaded', () => {
+    loadUserData();
+  });
+
+  function loadUserData() {
+    currentUser = JSON.parse(localStorage.getItem('egCurrentUser'));
+    if (!currentUser) {
+      window.location.replace('login.html');
+      return;
+    }
+
+    // Bind Overview elements
+    document.getElementById('welcomeTitle').textContent = `Hello, ${currentUser.name}`;
+    document.getElementById('sidebarUserName').textContent = currentUser.name;
+    document.getElementById('sidebarUserTier').textContent = currentUser.tier || 'Silver Club Member';
+    
+    document.getElementById('profileName').textContent = currentUser.name;
+    document.getElementById('profileEmail').textContent = currentUser.email;
+    document.getElementById('profilePhone').textContent = currentUser.phone || 'Not provided';
+    document.getElementById('profileJoined').textContent = currentUser.joined || 'June 2026';
+    document.getElementById('profileAddress').textContent = currentUser.address || 'No address registered.';
+
+    // Bind Stats
+    const ordersCount = currentUser.orders ? currentUser.orders.length : 0;
+    document.getElementById('statOrdersCount').textContent = ordersCount;
+    document.getElementById('statUserTier').textContent = (currentUser.tier || 'Silver Member').split(' ')[0];
+    
+    // Bind Wishlist Stat
+    const wishlist = JSON.parse(localStorage.getItem('egWishlist')) || [];
+    document.getElementById('statWishlistCount').textContent = wishlist.length;
+
+    // Prefill Edit Profile fields
+    document.getElementById('editName').value = currentUser.name;
+    document.getElementById('editPhone').value = currentUser.phone || '';
+    document.getElementById('editAddress').value = currentUser.address || '';
+
+    // Render Order History
+    renderOrderHistory();
+  }
+
+  function renderOrderHistory() {
+    const table = document.getElementById('ordersTable');
+    const tableBody = document.getElementById('ordersTableBody');
+    const emptyState = document.getElementById('emptyOrdersState');
+
+    const orders = currentUser.orders || [];
+
+    if (orders.length === 0) {
+      table.style.display = 'none';
+      emptyState.style.display = 'block';
+      return;
+    }
+
+    table.style.display = 'table';
+    emptyState.style.display = 'none';
+    tableBody.innerHTML = '';
+
+    orders.forEach(order => {
+      const row = document.createElement('tr');
+      
+      const badgeClass = order.status.toLowerCase() === 'delivered' ? 'delivered' : 
+                         (order.status.toLowerCase() === 'shipped' ? 'shipped' : 'processing');
+      
+      row.innerHTML = `
+        <td style="font-weight: 600; color: var(--primary-color);">${order.id}</td>
+        <td>${order.date}</td>
+        <td>${order.items}</td>
+        <td style="font-weight: 500;">₹${order.total.toLocaleString('en-IN')}</td>
+        <td><span class="status-badge ${badgeClass}">${order.status}</span></td>
+      `;
+      tableBody.appendChild(row);
+    });
+  }
+
+  function switchPanel(panelId) {
+    // Switch active panel visibility
+    document.querySelectorAll('.dashboard-content-panel').forEach(panel => {
+      panel.classList.remove('active');
+    });
+    document.getElementById(`panel-${panelId}`).classList.add('active');
+
+    // Switch active link design
+    document.querySelectorAll('.sidebar-link').forEach(link => {
+      link.classList.remove('active');
+    });
+    document.getElementById(`btn-${panelId}`).classList.add('active');
+  }
+
+  function handleProfileUpdate(e) {
+    e.preventDefault();
+    const name = document.getElementById('editName').value;
+    const phone = document.getElementById('editPhone').value;
+    const address = document.getElementById('editAddress').value;
+
+    if (window.updateUserProfile(name, phone, address)) {
+      loadUserData(); // Reload UI data
+      switchPanel('overview'); // Go back to overview
+    }
+  }
+</script>
+
+<a href="https://wa.me/919838222315" class="whatsapp-float" target="_blank" rel="noopener noreferrer" title="Chat on WhatsApp">
+  <i class="fa-brands fa-whatsapp"></i>
+</a>
+</body>
+</html>

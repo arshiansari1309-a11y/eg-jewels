@@ -39,6 +39,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <a href="about.html" class="drawer-link"><i class="fa-solid fa-book-open"></i> Our Story</a>
             <a href="testimonial.html" class="drawer-link"><i class="fa-solid fa-star"></i> Testimonials</a>
             <a href="contact.html" class="drawer-link"><i class="fa-solid fa-envelope"></i> Contact</a>
+            <a href="login.html" class="drawer-link" id="drawerAuthLink"><i class="fa-solid fa-user"></i> Login</a>
           </div>
           <div class="drawer-divider"></div>
           <div class="drawer-meta">
@@ -233,12 +234,57 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   window.confirmPayment = function() {
+    let cart = JSON.parse(localStorage.getItem('everglowCart')) || [];
+    if (cart.length === 0) {
+      alert("Your cart is empty!");
+      return;
+    }
+
+    // Save order if user is logged in
+    const currentUser = JSON.parse(localStorage.getItem('egCurrentUser'));
+    if (currentUser) {
+      const orderId = 'EG-' + Math.floor(10000 + Math.random() * 90000);
+      const today = new Date().toISOString().split('T')[0];
+      const itemsDescription = cart.map(item => `${item.name} x${item.quantity}`).join(', ');
+      
+      const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+      const tax = subtotal * 0.18;
+      const total = subtotal + tax;
+
+      const newOrder = {
+        id: orderId,
+        date: today,
+        items: itemsDescription,
+        total: Math.round(total),
+        status: 'Processing'
+      };
+
+      if (!currentUser.orders) currentUser.orders = [];
+      currentUser.orders.unshift(newOrder); // Add to beginning
+
+      // Save user session
+      localStorage.setItem('egCurrentUser', JSON.stringify(currentUser));
+
+      // Sync with database
+      let users = JSON.parse(localStorage.getItem('egUsers')) || [];
+      const userIdx = users.findIndex(u => u.email === currentUser.email);
+      if (userIdx > -1) {
+        users[userIdx].orders = currentUser.orders;
+        localStorage.setItem('egUsers', JSON.stringify(users));
+      }
+    }
+
     // Complete the checkout process
     localStorage.removeItem('everglowCart');
     updateCartBadge();
     closePaymentModal();
     alert("Thank you for your payment! Your order has been placed successfully.");
-    window.location.href = "shop.html"; // Redirect to shop
+    
+    if (currentUser) {
+      window.location.href = "dashboard.html"; // Redirect to dashboard to check order status
+    } else {
+      window.location.href = "shop.html"; // Redirect to shop
+    }
   };
 
   // Shop Page Category Filters
@@ -382,6 +428,157 @@ document.addEventListener('DOMContentLoaded', () => {
   window.closeProductModal = function(event) {
     if(event && event.target.id !== 'productModalOverlay') return;
     document.getElementById('productModalOverlay').classList.remove('active');
+  };
+
+  // === CLIENT AUTH & SESSION LOGIC ===
+  
+  // 1. Initialize Mock User Database
+  function initUserDatabase() {
+    let users = JSON.parse(localStorage.getItem('egUsers')) || [];
+    if (users.length === 0) {
+      // Seed with a default premium customer
+      users.push({
+        name: "Jane Doe",
+        email: "client@everglow.com",
+        password: "password123",
+        phone: "+91 98765 43210",
+        address: "Flat 402, Golden Heights, Bandra West, Mumbai - 400050",
+        tier: "Platinum Club Member",
+        joined: "June 2026",
+        orders: [
+          {
+            id: "EG-1024",
+            date: "2026-05-20",
+            items: "Luminous Earrings x1",
+            total: 129,
+            status: "Delivered"
+          },
+          {
+            id: "EG-1025",
+            date: "2026-06-02",
+            items: "Cuff Bracelet x2",
+            total: 498,
+            status: "Shipped"
+          }
+        ]
+      });
+      localStorage.setItem('egUsers', JSON.stringify(users));
+    }
+  }
+
+  // Initialize DB immediately
+  initUserDatabase();
+
+  // 2. Auth State Sync Function
+  function updateAuthUI() {
+    const currentUser = JSON.parse(localStorage.getItem('egCurrentUser'));
+    const headerAuthLinks = document.querySelectorAll('#headerAuthLink');
+    const drawerAuthLink = document.getElementById('drawerAuthLink');
+
+    if (currentUser) {
+      // Logged in state
+      headerAuthLinks.forEach(link => {
+        link.href = 'dashboard.html';
+        link.title = `Dashboard (${currentUser.name})`;
+        link.innerHTML = '<i class="fa-solid fa-user-check" style="color: var(--primary-color);"></i>';
+      });
+      if (drawerAuthLink) {
+        drawerAuthLink.href = 'dashboard.html';
+        drawerAuthLink.innerHTML = '<i class="fa-solid fa-user-check"></i> Dashboard';
+      }
+    } else {
+      // Logged out state
+      headerAuthLinks.forEach(link => {
+        link.href = 'login.html';
+        link.title = 'Account Login';
+        link.innerHTML = '<i class="fa-regular fa-user"></i>';
+      });
+      if (drawerAuthLink) {
+        drawerAuthLink.href = 'login.html';
+        drawerAuthLink.innerHTML = '<i class="fa-solid fa-user"></i> Login';
+      }
+    }
+  }
+
+  // Expose check to other scripts
+  window.updateAuthUI = updateAuthUI;
+  updateAuthUI();
+
+  // 3. User Register Handler
+  window.registerUser = function(name, email, password, phone = '', address = '') {
+    let users = JSON.parse(localStorage.getItem('egUsers')) || [];
+    const exists = users.some(u => u.email.toLowerCase() === email.toLowerCase());
+    
+    if (exists) {
+      alert("An account with this email address already exists.");
+      return false;
+    }
+
+    const newUser = {
+      name: name,
+      email: email.toLowerCase(),
+      password: password,
+      phone: phone || "+91 ",
+      address: address || "",
+      tier: "Silver Club Member",
+      joined: new Date().toLocaleString('default', { month: 'long' }) + " " + new Date().getFullYear(),
+      orders: []
+    };
+
+    users.push(newUser);
+    localStorage.setItem('egUsers', JSON.stringify(users));
+    localStorage.setItem('egCurrentUser', JSON.stringify(newUser));
+    
+    updateAuthUI();
+    return true;
+  };
+
+  // 4. User Login Handler
+  window.loginUser = function(email, password) {
+    let users = JSON.parse(localStorage.getItem('egUsers')) || [];
+    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
+    
+    if (!user) {
+      alert("Invalid email address or password.");
+      return false;
+    }
+
+    localStorage.setItem('egCurrentUser', JSON.stringify(user));
+    updateAuthUI();
+    return true;
+  };
+
+  // 5. User Logout Handler
+  window.logoutUser = function() {
+    localStorage.removeItem('egCurrentUser');
+    updateAuthUI();
+    window.location.href = 'index.html';
+  };
+
+  // 6. Profile Edit Handler
+  window.updateUserProfile = function(name, phone, address) {
+    const currentUser = JSON.parse(localStorage.getItem('egCurrentUser'));
+    if (!currentUser) return false;
+
+    currentUser.name = name;
+    currentUser.phone = phone;
+    currentUser.address = address;
+
+    // Save locally
+    localStorage.setItem('egCurrentUser', JSON.stringify(currentUser));
+
+    // Update in database
+    let users = JSON.parse(localStorage.getItem('egUsers')) || [];
+    const index = users.findIndex(u => u.email === currentUser.email);
+    if (index > -1) {
+      users[index].name = name;
+      users[index].phone = phone;
+      users[index].address = address;
+      localStorage.setItem('egUsers', JSON.stringify(users));
+    }
+
+    alert("Profile details updated successfully!");
+    return true;
   };
 
 });
